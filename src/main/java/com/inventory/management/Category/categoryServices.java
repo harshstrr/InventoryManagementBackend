@@ -1,8 +1,8 @@
-package com.inventory.management.category;
+package com.inventory.management.Category;
 
-import com.inventory.management.category.dto.UpdateCategoryRequest;
-import com.inventory.management.category.modal.Category;
-import com.inventory.management.category.repository.categoryRepo;
+import com.inventory.management.Category.dto.UpdateCategoryRequest;
+import com.inventory.management.Category.modal.Category;
+import com.inventory.management.Category.repository.categoryRepo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

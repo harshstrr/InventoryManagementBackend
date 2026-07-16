@@ -1,4 +1,4 @@
-package com.inventory.management.category.modal;
+package com.inventory.management.Category.modal;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,7 +22,7 @@ public class Category {
     private String name;
 
     @Column(name="parent_id", nullable = true)
-    private Integer parent_id;
+    private Long parent_id;
 
     @Column(name = "is_active", nullable = false)
     @Builder.Default

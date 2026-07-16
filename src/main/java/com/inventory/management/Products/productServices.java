@@ -1,15 +1,15 @@
-package com.inventory.management.products;
+package com.inventory.management.Products;
 
-import com.inventory.management.category.modal.Category;
-import com.inventory.management.category.repository.categoryRepo;
-import com.inventory.management.products.dto.UpdateProductRequest;
-import com.inventory.management.products.modal.Product;
+import com.inventory.management.Category.modal.Category;
+import com.inventory.management.Category.repository.categoryRepo;
+import com.inventory.management.Products.dto.AddProductRequest;
+import com.inventory.management.Products.dto.UpdateProductRequest;
+import com.inventory.management.Products.modal.Product;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.inventory.management.products.repository.productsRepo;
+import com.inventory.management.Products.repository.productsRepo;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,9 +24,24 @@ public class productServices {
         return ProductsRepo.findAll();
     }
 
-    public Product addProduct(Product p) {
-        ProductsRepo.save(p);
-        return p;
+    public Product addProduct(AddProductRequest p) {
+        Product product = new Product();
+
+        Category category = CategoryRepo.findById(p.categoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found with id: " + p.categoryId()));
+
+        product.setName(p.name());
+        product.setSku(p.sku());
+        product.setDescription(p.description());
+        product.setCategory(category);
+        product.setIsActive(true);
+        product.setUnit(p.unit());
+        product.setCostPrice(p.costPrice());
+        product.setSellingPrice(p.sellingPrice());
+        product.setReorderThreshold(p.reorderThreshold());
+        product.setReorderQty(p.reorderQty());
+
+        return ProductsRepo.save(product);
     }
 
     public Optional<Product> getProduct(Long id) {

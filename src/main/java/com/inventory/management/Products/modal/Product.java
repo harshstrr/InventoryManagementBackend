@@ -1,6 +1,6 @@
-package com.inventory.management.products.modal;
+package com.inventory.management.Products.modal;
 
-import com.inventory.management.category.modal.Category;
+import com.inventory.management.Category.modal.Category;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -60,6 +60,7 @@ public class Product {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
 
     @PrePersist
     protected void onCreate() {

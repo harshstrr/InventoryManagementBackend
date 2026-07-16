@@ -1,12 +1,16 @@
-package com.inventory.management.products.dto;
+package com.inventory.management.Products.dto;
+
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
-public record UpdateProductRequest(
+public record AddProductRequest(
         @NotBlank(message = "Name is required")
         @Size(max = 200)
         String name,
+
+        @NotNull(message = "sku is required")
+        String sku,
 
         String description,
 

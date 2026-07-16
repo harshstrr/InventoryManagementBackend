@@ -1,10 +1,8 @@
-package com.inventory.management.products.repository;
+package com.inventory.management.Products.repository;
 
-import com.inventory.management.products.modal.Product;
+import com.inventory.management.Products.modal.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface productsRepo extends JpaRepository<Product, Long> {

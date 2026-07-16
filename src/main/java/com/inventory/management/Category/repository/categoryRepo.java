@@ -1,7 +1,7 @@
-package com.inventory.management.category.repository;
+package com.inventory.management.Category.repository;
 
 
-import com.inventory.management.category.modal.Category;
+import com.inventory.management.Category.modal.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

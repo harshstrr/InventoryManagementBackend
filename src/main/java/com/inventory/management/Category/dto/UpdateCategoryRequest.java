@@ -1,4 +1,4 @@
-package com.inventory.management.category.dto;
+package com.inventory.management.Category.dto;
 
 import jakarta.validation.constraints.*;
 
@@ -8,5 +8,5 @@ public record UpdateCategoryRequest (
         @NotBlank(message = "Name is required")
         String name,
 
-        Integer parent_id
+        Long parent_id
 ) {}

@@ -22,4 +22,10 @@ public class WarehouseServices {
     public Warehouse addWarehouse(@Valid Warehouse w) {
         return warehouseRepository.save(w);
     }
+
+    public Warehouse deleteWarehouse(Long id) {
+        Warehouse w = warehouseRepository.findById(id).orElseThrow();
+        w.setIsActive(false);
+        return warehouseRepository.save(w);
+    }
 }

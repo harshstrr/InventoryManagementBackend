@@ -9,7 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import com.inventory.management.Products.repository.productsRepo;
+import com.inventory.management.Products.repository.ProductRepository;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,11 +17,11 @@ import java.util.Optional;
 @AllArgsConstructor
 @Slf4j
 public class productServices {
-    private productsRepo ProductsRepo;
+    private ProductRepository ProductRepository;
     private categoryRepo CategoryRepo;
 
     public List<Product> findAllProducts() {
-        return ProductsRepo.findAll();
+        return ProductRepository.findAll();
     }
 
     public Product addProduct(AddProductRequest p) {
@@ -41,16 +41,16 @@ public class productServices {
         product.setReorderThreshold(p.reorderThreshold());
         product.setReorderQty(p.reorderQty());
 
-        return ProductsRepo.save(product);
+        return ProductRepository.save(product);
     }
 
     public Optional<Product> getProduct(Long id) {
-        return ProductsRepo.findById(id);
+        return ProductRepository.findById(id);
     }
 
     @Transactional
     public Product editProduct(Long id, UpdateProductRequest request) {
-        Product product = ProductsRepo.findById(id)
+        Product product = ProductRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
 
         Category category = CategoryRepo.findById(request.categoryId())
@@ -67,15 +67,15 @@ public class productServices {
         product.setReorderQty(request.reorderQty());
         // updatedAt is handled automatically by @PreUpdate — no need to set it here
 
-        return ProductsRepo.save(product);
+        return ProductRepository.save(product);
     }
 
     public Product deleteProduct(Long id) {
-        Product product = ProductsRepo.findById(id)
+        Product product = ProductRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
         product.setIsActive(false);
 
-        return ProductsRepo.save(product);
+        return ProductRepository.save(product);
 
     }
 }

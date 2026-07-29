@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
+import java.util.List;
 
 
 @RestController
@@ -26,14 +27,6 @@ public class UserController {
     private UserServices userServices;
     private AppUserRepository appUserRepository;
 
-    @PostMapping("/add-user")
-    public ResponseEntity<ApiResponse<AppUserResponse>> addUser(@RequestBody AppUserRequest u) {
-        try {
-            return ResponseEntity.ok(ApiResponse.success(AppUserResponse.from(userServices.addUser(u)) , "Successfully added user"));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
-        }
-    }
 
     @GetMapping("/getUser")
     public ResponseEntity<ApiResponse<AppUserResponse>> getUser( @RequestParam(name = "mobileNumber") BigInteger mobileNumber ) {
@@ -43,4 +36,5 @@ public class UserController {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
+
 }

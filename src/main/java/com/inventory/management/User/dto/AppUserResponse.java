@@ -3,6 +3,7 @@ package com.inventory.management.User.dto;
 import com.inventory.management.User.modal.AppUser;
 
 import java.math.BigInteger;
+import java.util.List;
 
 public record AppUserResponse(
         Long id,
@@ -17,4 +18,5 @@ public record AppUserResponse(
         }
         return new AppUserResponse(u.getId(), u.getUsername() , u.getEmail() , u.getMobileNumber() , u.getIsActive());
     }
+
 }

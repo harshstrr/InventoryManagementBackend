@@ -2,6 +2,7 @@ package com.inventory.management.Login;
 
 import com.inventory.management.Login.dto.LoginRequest;
 import com.inventory.management.Login.dto.LoginResponse;
+import com.inventory.management.User.dto.AppUserRequest;
 import com.inventory.management.User.modal.AppUser;
 import com.inventory.management.User.repository.AppUserRepository;
 import lombok.AllArgsConstructor;
@@ -54,6 +55,7 @@ public class LoginServices {
     public LoginResponse verifyOtp(BigInteger mobileNumber , Long otp) {
         AppUser user = appUserRepository.findByMobileNumber(mobileNumber);
         if(user.getOtp().equals(otp)){
+            user.setIsActive(true);
             user.setIsRegister(true);
         } else {
             throw new RuntimeException("Invalid OTP");
@@ -62,6 +64,23 @@ public class LoginServices {
         return LoginResponse.from(user);
     }
 
+    public LoginResponse createNewUser(AppUserRequest u ) {
+        AppUser user = new AppUser();
+        user.setUsername(u.username());
+        user.setPassword(passwordEncoder.encode(u.password()));
+        user.setEmail(u.email());
+        user.setMobileNumber(u.mobileNumber());
 
+        appUserRepository.saveAndFlush(user);
 
+        sendOtp(u.mobileNumber());
+
+        return LoginResponse.from(user);
+    }
+
+    public void disableUser (LoginRequest payload) {
+        AppUser user = appUserRepository.findByMobileNumber(payload.mobileNumber());
+        user.setIsActive(false);
+        appUserRepository.saveAndFlush(user);
+    }
 }

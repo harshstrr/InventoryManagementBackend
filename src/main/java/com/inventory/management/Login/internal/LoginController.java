@@ -4,6 +4,7 @@ import com.inventory.management.Common.ApiResponse;
 import com.inventory.management.Login.LoginServices;
 import com.inventory.management.Login.dto.LoginRequest;
 import com.inventory.management.Login.dto.LoginResponse;
+import com.inventory.management.User.dto.AppUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class LoginController {
     public ResponseEntity<ApiResponse<Void>> sendOtp(@RequestParam BigInteger mobileNumber) {
         try{
             loginServices.sendOtp(mobileNumber);
-            return ResponseEntity.ok(ApiResponse.success(null , "Successfully Login "));
+            return ResponseEntity.ok(ApiResponse.success(null , "Successfully Send OTP"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
@@ -49,6 +50,25 @@ public class LoginController {
         try{
             loginServices.createNewPassword(payload.mobileNumber() , payload.password());
             return ResponseEntity.ok(ApiResponse.success(null, "Successfully Created New Password"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @PostMapping("/create-user")
+    public ResponseEntity<ApiResponse<LoginResponse>> createUser (@RequestBody() AppUserRequest user) {
+        try {
+            return ResponseEntity.ok(ApiResponse.success(loginServices.createNewUser(user) , "Successfully Sign-Up Completed"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/disable-user")
+    public ResponseEntity<ApiResponse<Void>> DeleteUser (@RequestBody() LoginRequest payload) {
+        try {
+            loginServices.disableUser(payload);
+            return ResponseEntity.ok(ApiResponse.success(null, "Successfully Disabled Profile"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }

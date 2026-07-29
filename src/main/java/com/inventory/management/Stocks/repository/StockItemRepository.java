@@ -14,6 +14,6 @@ public interface StockItemRepository extends JpaRepository<StockItem, Long> {
     List<StockItem> findByProductId(Long productId);
     List<StockItem> findByWarehouseId(Long warehouseId);
 
-//    @Query("SELECT s FROM StockItem s WHERE s.quantity <= s.product.reorderThreshold")
-//    List<StockItem> findLowStockItems();
+    @Query("SELECT s FROM StockItem s WHERE s.quantity <= s.product.reorderThreshold")
+    List<StockItem> findLowStockItems();
 }

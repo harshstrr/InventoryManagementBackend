@@ -12,27 +12,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.math.BigInteger;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
 @Slf4j
 @Validated
 public class UserServices {
-
-    private final PasswordEncoder passwordEncoder;
-
     private final AppUserRepository appUserRepository;
-
-    public AppUser addUser(@Valid AppUserRequest u) {
-        AppUser user = new AppUser();
-        user.setUsername(u.username());
-        user.setPassword(passwordEncoder.encode(u.password()));
-        user.setEmail(u.email());
-        user.setMobileNumber(u.mobileNumber());
-
-        return appUserRepository.save(user);
-    }
-
-
 
 }

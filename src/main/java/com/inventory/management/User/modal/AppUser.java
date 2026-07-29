@@ -44,16 +44,25 @@ public class AppUser {
 
     @Column(name = "is_active", nullable = false)
     @Builder.Default
-    private Boolean isActive = true;
+    private Boolean isActive = false;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    public AppUser(AppUser u) {
+        this.isActive = u.getIsActive();
+        this.createdAt = u.getCreatedAt();
+        this.password = u.getPassword();
+        this.email = u.getEmail();
+        this.mobileNumber = u.getMobileNumber();
+        this.username = u.getUsername();
+        this.id = u.getId();
+        Otp = u.getOtp();
+        this.isRegister = u.getIsRegister();
+    }
+
     @PrePersist
     protected void onCreate() {
-        if (isActive == null) {
-            isActive = true;
-        }
         createdAt = LocalDateTime.now();
     }
 

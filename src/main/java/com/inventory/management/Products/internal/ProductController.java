@@ -59,9 +59,9 @@ public class ProductController {
     }
 
     @PutMapping("/edit-product/{id}")
-    public ResponseEntity<ApiResponse<Product>> editProduct(@PathVariable Long id , @RequestBody UpdateProductRequest p) {
+    public ResponseEntity<ApiResponse<ProductResponse>> editProduct(@PathVariable Long id , @RequestBody UpdateProductRequest p) {
         try {
-            return ResponseEntity.ok(ApiResponse.success(  ProductServices.editProduct(id , p) , "Successfully Edited Product" ));
+            return ResponseEntity.ok(ApiResponse.success(ProductResponse.from(ProductServices.editProduct(id , p)) , "Successfully Edited Product" ));
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));

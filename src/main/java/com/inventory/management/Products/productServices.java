@@ -3,6 +3,7 @@ package com.inventory.management.Products;
 import com.inventory.management.Category.modal.Category;
 import com.inventory.management.Category.repository.categoryRepo;
 import com.inventory.management.Products.dto.AddProductRequest;
+import com.inventory.management.Products.dto.ProductResponse;
 import com.inventory.management.Products.dto.UpdateProductRequest;
 import com.inventory.management.Products.modal.Product;
 import jakarta.transaction.Transactional;
@@ -17,11 +18,11 @@ import java.util.Optional;
 @AllArgsConstructor
 @Slf4j
 public class productServices {
-    private ProductRepository ProductRepository;
+    private ProductRepository productRepository;
     private categoryRepo CategoryRepo;
 
     public List<Product> findAllProducts() {
-        return ProductRepository.findAll();
+        return productRepository.findAll();
     }
 
     public Product addProduct(AddProductRequest p) {
@@ -41,16 +42,19 @@ public class productServices {
         product.setReorderThreshold(p.reorderThreshold());
         product.setReorderQty(p.reorderQty());
 
-        return ProductRepository.save(product);
+        return productRepository.save(product);
     }
 
-    public Optional<Product> getProduct(Long id) {
-        return ProductRepository.findById(id);
+    public Optional<ProductResponse> getProduct(Long id) {
+        Product product =  productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        return Optional.of(ProductResponse.from(product));
     }
 
     @Transactional
     public Product editProduct(Long id, UpdateProductRequest request) {
-        Product product = ProductRepository.findById(id)
+        Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
 
         Category category = CategoryRepo.findById(request.categoryId())
@@ -67,15 +71,15 @@ public class productServices {
         product.setReorderQty(request.reorderQty());
         // updatedAt is handled automatically by @PreUpdate — no need to set it here
 
-        return ProductRepository.save(product);
+        return productRepository.save(product);
     }
 
     public Product deleteProduct(Long id) {
-        Product product = ProductRepository.findById(id)
+        Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
         product.setIsActive(false);
 
-        return ProductRepository.save(product);
+        return productRepository.save(product);
 
     }
 }

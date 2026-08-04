@@ -1,5 +1,6 @@
 package com.inventory.management.Category.internal;
 
+import com.inventory.management.Category.dto.CategorySummary;
 import com.inventory.management.Common.ApiResponse;
 import com.inventory.management.Category.categoryServices;
 import com.inventory.management.Category.dto.UpdateCategoryRequest;
@@ -17,17 +18,18 @@ import java.util.List;
 public class CategoryController {
     private categoryServices CategoryService;
 
-    @GetMapping("/getAllCategory")
-    public ResponseEntity<ApiResponse<List<Category>>> getAllCategory() {
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<CategorySummary>>> getAllCategory() {
         try {
-            return ResponseEntity.ok(ApiResponse.success(CategoryService.findAllCategory() , "Successfully Fetched Categories"));
+            List<CategorySummary> res = CategoryService.findAllCategory().stream().map((CategorySummary:: from)).toList();
+            return ResponseEntity.ok(ApiResponse.success( res, "Successfully Fetched Categories"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
 
 
-    @PostMapping("/add-category")
+    @PostMapping
     public ResponseEntity<ApiResponse<Category>> addCategory(@RequestBody Category c) {
         try{
             return ResponseEntity.ok(ApiResponse.success(CategoryService.addCategory(c) , "Successfully Added Category"));
@@ -36,7 +38,7 @@ public class CategoryController {
         }
 }
 
-    @PutMapping("/edit-category/{id}")
+    @PutMapping("/{id}/update")
     public ResponseEntity<ApiResponse<Category>> editCategory(@RequestBody UpdateCategoryRequest c , @PathVariable Long id) {
         try{
             return ResponseEntity.ok(ApiResponse.success( CategoryService.editCategory(id , c) , "Successfully Edited Category" ));
@@ -45,7 +47,7 @@ public class CategoryController {
         }
     }
 
-    @DeleteMapping("/delete-category/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Category>> deleteCategory(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(ApiResponse.success( CategoryService.deleteCategory(id) , "Successfully deleted Category" ));

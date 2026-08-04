@@ -49,6 +49,12 @@ public class AppUser {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "access_token")
+    private String accessToken;
+
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
     public AppUser(AppUser u) {
         this.isActive = u.getIsActive();
         this.createdAt = u.getCreatedAt();

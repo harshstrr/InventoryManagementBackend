@@ -20,7 +20,7 @@ public class WarehouseController {
     @Autowired
     WarehouseServices warehouseServices;
 
-    @GetMapping("/getAllWarehouse")
+    @GetMapping
     public ResponseEntity<ApiResponse<List<Warehouse>>> getAllWarehouse () {
         try {
             return ResponseEntity.ok(ApiResponse.success(warehouseServices.getAllWarehouse() , "Successfully fetched Warehouses"));
@@ -29,7 +29,7 @@ public class WarehouseController {
         }
     }
 
-    @PostMapping("/add-warehouse")
+    @PostMapping
     public ResponseEntity<ApiResponse<Warehouse>> addWarehouse (@RequestBody @Valid Warehouse w) {
         try {
             return ResponseEntity.ok(ApiResponse.success(warehouseServices.addWarehouse(w) , "Successfully Added Warehouse"));
@@ -38,7 +38,7 @@ public class WarehouseController {
         }
     }
 
-    @DeleteMapping("/delete-warehouse/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Warehouse>> deleteWarehouse (@PathVariable Long id) {
         try {
             return ResponseEntity.ok(ApiResponse.success(warehouseServices.deleteWarehouse(id) , "Successfully Deleted Warehouse"));

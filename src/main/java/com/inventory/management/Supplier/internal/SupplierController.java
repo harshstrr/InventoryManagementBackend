@@ -17,7 +17,7 @@ import java.util.List;
 public class SupplierController {
     private SupplierServices supplierServices;
 
-    @PostMapping("/add-supplier")
+    @PostMapping
     public ResponseEntity<ApiResponse<SupplierResponse>> addSupplier (@RequestBody @Valid CreateSupplierRequest s) {
         try {
             return ResponseEntity.ok(ApiResponse.success(SupplierResponse.from(supplierServices.addSupplier(s)) , "Successfully added new Supplier"));

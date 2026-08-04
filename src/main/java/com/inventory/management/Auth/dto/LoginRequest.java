@@ -1,4 +1,4 @@
-package com.inventory.management.Login.dto;
+package com.inventory.management.Auth.dto;
 
 import java.math.BigInteger;
 

@@ -5,6 +5,7 @@ package com.inventory.management.Products.internal;
 import com.inventory.management.Common.ApiResponse;
 import com.inventory.management.Products.dto.AddProductRequest;
 import com.inventory.management.Products.dto.ProductResponse;
+import com.inventory.management.Products.dto.ProductSummaryResponse;
 import com.inventory.management.Products.dto.UpdateProductRequest;
 import com.inventory.management.Products.modal.Product;
 import com.inventory.management.Products.productServices;
@@ -25,12 +26,12 @@ public class ProductController {
     @Autowired
     private productServices ProductServices;
 
-    @GetMapping("/getAllProducts")
-    public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProducts (){
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<ProductSummaryResponse>>> getAllProducts (){
         try {
-            List<ProductResponse> response = ProductServices.findAllProducts()
+            List<ProductSummaryResponse> response = ProductServices.findAllProducts()
                     .stream()
-                    .map(ProductResponse::from)
+                    .map(ProductSummaryResponse::from)
                     .toList();
             return ResponseEntity.ok(ApiResponse.success( response , "Successfully fetch Products"));
         } catch (Exception e) {
@@ -39,7 +40,7 @@ public class ProductController {
 
     }
 
-    @PostMapping("/add-product")
+    @PostMapping
     public ResponseEntity<ApiResponse<ProductResponse>> addProduct(@RequestBody AddProductRequest entity) {
         try {
             return ResponseEntity.ok(ApiResponse.success( ProductResponse.from(ProductServices.addProduct(entity)) , "Product Added Successfully" ));
@@ -50,15 +51,15 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Optional<Product>>> getProduct(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Optional<ProductResponse>>> getProduct(@PathVariable Long id) {
         try{
-            return ResponseEntity.ok(ApiResponse.success( ProductServices.getProduct(id) , "Successfully fetched Product."));
+            return ResponseEntity.ok(ApiResponse.success(ProductServices.getProduct(id) , "Successfully fetched Product."));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
 
-    @PutMapping("/edit-product/{id}")
+    @PutMapping("/{id}/update")
     public ResponseEntity<ApiResponse<ProductResponse>> editProduct(@PathVariable Long id , @RequestBody UpdateProductRequest p) {
         try {
             return ResponseEntity.ok(ApiResponse.success(ProductResponse.from(ProductServices.editProduct(id , p)) , "Successfully Edited Product" ));
@@ -67,7 +68,7 @@ public class ProductController {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
-    @DeleteMapping("/delete-Product/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Product>> deleteProduct (@PathVariable Long id){
         try {
             return ResponseEntity.ok(ApiResponse.success(  ProductServices.deleteProduct(id) , "Successfully Edited Product" ));

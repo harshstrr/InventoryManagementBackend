@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/orders")
+@RequestMapping("/api/purchase")
 public class PurchaseOrderController {
 
     private PurchaseOrderServices purchaseOrderServices;
@@ -30,10 +30,9 @@ public class PurchaseOrderController {
         }
     }
 
-    @PostMapping("/purchase")
+    @PostMapping
     public ResponseEntity<ApiResponse<PurchaseOrderResponse>> createPurchase (@RequestBody @Valid PurchaseOrderRequest request) {
          return ResponseEntity.status(201).body(ApiResponse.success(PurchaseOrderResponse.from(purchaseOrderServices.createOrder(request)) , "Successfully Ordered Items" ));
-
     }
 
     @PostMapping("/{id}/receive")

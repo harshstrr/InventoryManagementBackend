@@ -6,6 +6,7 @@ import com.inventory.management.Stocks.modal.StockItem;
 import com.inventory.management.Stocks.modal.StockMovement;
 import com.inventory.management.Stocks.repository.StockItemRepository;
 import com.inventory.management.Stocks.repository.StockMovementRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -14,21 +15,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/stock")
+@AllArgsConstructor
+@RequestMapping("/api/stock")
 public class StockController {
 
     private final StockItemRepository stockItemRepository;
     private final StockMovementRepository stockMovementRepository;
 
-    public StockController(StockItemRepository stockItemRepository,
-                           StockMovementRepository stockMovementRepository) {
-        this.stockItemRepository = stockItemRepository;
-        this.stockMovementRepository = stockMovementRepository;
-    }
-
-    // GET /api/v1/stock?productId=5          -> stock for one product, all warehouses
-    // GET /api/v1/stock?warehouseId=2        -> everything in one warehouse
-    // GET /api/v1/stock?lowStockOnly=true    -> only items below reorder threshold
     @GetMapping
     public ResponseEntity<ApiResponse<List<StockItemResponse>>> getStock(
             @RequestParam(required = false) Long productId,
@@ -48,7 +41,6 @@ public class StockController {
         return ResponseEntity.ok(ApiResponse.success(response, "Successfully fetched All Stock Items"));
     }
 
-    // GET /api/v1/stock/movements?productId=5&warehouseId=2
     @GetMapping("/movements")
     public ResponseEntity<ApiResponse<Page<StockMovementResponse>>> getMovements(
             @RequestParam Long productId,

@@ -9,12 +9,14 @@ import com.inventory.management.User.modal.AppUser;
 import com.inventory.management.User.repository.AppUserRepository;
 import com.inventory.management.Warehouse.modal.Warehouse;
 
+import lombok.AllArgsConstructor;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.resilience.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@AllArgsConstructor
 public class StockServices {
 
     private final StockItemRepository stockItemRepository;
@@ -22,15 +24,6 @@ public class StockServices {
     private final AppUserRepository appUserRepository;
 
 
-    public StockServices(StockItemRepository stockItemRepository,
-                         StockMovementRepository stockMovementRepository, AppUserRepository appUserRepository) {
-        this.stockItemRepository = stockItemRepository;
-        this.stockMovementRepository = stockMovementRepository;
-        this.appUserRepository = appUserRepository;
-    }
-
-    // Stock IN — called when a purchase order is marked "received"
-//    @Retryable(retryFor = ObjectOptimisticLockingFailureException.class, maxAttempts = 3, backoff = @Backoff(delay = 100))
     @Transactional
     public void recordPurchase(Product product, Warehouse warehouse, int qty, Long referenceId , AppUser createdby) {
         StockItem item = stockItemRepository
@@ -44,10 +37,8 @@ public class StockServices {
         // ^ "the transaction log" gets one new line
     }
 
-    // Stock OUT — called when a sales order is placed
-//    @Retryable(retryFor = ObjectOptimisticLockingFailureException.class, maxAttempts = 3, backoff = @Backoff(delay = 100))
-    @Transactional
-    public void recordSale(Product product, Warehouse warehouse, int qty, Long referenceId) {
+   @Transactional
+    public void recordSale(Product product, Warehouse warehouse, int qty, Long referenceId, AppUser createdby) {
         StockItem item = stockItemRepository
                 .findByProductIdAndWarehouseId(product.getId(), warehouse.getId())
                 .orElseThrow(() -> new RuntimeException(
@@ -60,7 +51,6 @@ public class StockServices {
 
         item.setQuantity(item.getQuantity() - qty);       // "the balance" goes down
         stockItemRepository.save(item);
-        AppUser createdby = new AppUser();
         saveMovement(product, warehouse, MovementType.SALE_OUT, qty, "SALES_ORDER", referenceId, createdby);
     }
 
@@ -84,5 +74,17 @@ public class StockServices {
         movement.setReferenceId(referenceId);
         movement.setCreatedBy(createdby);
         stockMovementRepository.save(movement);
+    }
+
+    @Transactional
+    public void recordReturn(Product product, Warehouse warehouse, int qty, Long referenceId, AppUser createdBy) {
+        StockItem item = stockItemRepository
+                .findByProductIdAndWarehouseId(product.getId(), warehouse.getId())
+                .orElseThrow(() -> new RuntimeException("No stock record to return into"));
+
+        item.setQuantity(item.getQuantity() + qty);   // ← stock goes UP, opposite of recordSale
+        stockItemRepository.save(item);
+
+        saveMovement(product, warehouse, MovementType.RETURN, qty, "SALES_ORDER", referenceId, createdBy);
     }
 }

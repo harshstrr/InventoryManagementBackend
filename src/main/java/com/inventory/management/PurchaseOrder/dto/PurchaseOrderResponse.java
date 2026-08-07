@@ -3,13 +3,10 @@ package com.inventory.management.PurchaseOrder.dto;
 import com.inventory.management.PurchaseOrder.PurchaseOrderStatus;
 import com.inventory.management.PurchaseOrder.modal.PurchaseOrder;
 import com.inventory.management.PurchaseOrderItem.dto.PurchaseOrderItemResponse;
-import com.inventory.management.PurchaseOrderItem.modal.PurchaseOrderItem;
 import com.inventory.management.Supplier.dto.SupplierSummary;
 import com.inventory.management.Warehouse.WarehouseSummary;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public record PurchaseOrderResponse(
@@ -32,7 +29,7 @@ public record PurchaseOrderResponse(
                 po.getStatus(),
                 po.getOrderDate(),
                 po.getExpectedDate(),
-                new CreatedByResponse(po.getCreatedBy().getId(), po.getCreatedBy().getUsername(), po.getCreatedBy().getMobileNumber() ),
+                new CreatedByResponse(po.getCreatedBy().getId(), po.getCreatedBy().getFirstName(), po.getCreatedBy().getMobileNumber() ),
                 po.getItems().stream().map(PurchaseOrderItemResponse::from).toList()
         );
     }

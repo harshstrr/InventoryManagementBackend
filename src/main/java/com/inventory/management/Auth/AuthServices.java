@@ -17,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -31,13 +30,13 @@ public class AuthServices {
         AppUser user = appUserRepository.findByMobileNumber(payload.mobileNumber())
                 .orElseThrow (() -> new BadCredentialsException("Invalid mobile number or password"));
 
-        String token = jwtService.generateToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
-
-
         if (!passwordEncoder.matches(payload.password() , user.getPassword())) {
             throw new BadCredentialsException("Invalid password");
         }
+
+        String token = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
         user.setAccessToken(token);
         user.setRefreshToken(refreshToken);
         user.setIsActive(true);
@@ -106,7 +105,8 @@ public class AuthServices {
 
     public LoginResponse createNewUser(AppUserRequest u ) {
         AppUser user = new AppUser();
-        user.setUsername(u.username());
+        user.setFirstName(u.firstName());
+        user.setLastName(u.lastName());
         user.setPassword(passwordEncoder.encode(u.password()));
         user.setEmail(u.email());
         user.setMobileNumber(u.mobileNumber());

@@ -6,7 +6,9 @@ import java.math.BigInteger;
 
 public record AppUserRequest (
         @NotNull
-        String username,
+        String firstName,
+
+        String lastName,
 
         String email,
 

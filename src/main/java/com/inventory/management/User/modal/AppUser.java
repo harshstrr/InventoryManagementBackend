@@ -3,7 +3,6 @@ package com.inventory.management.User.modal;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 
@@ -27,10 +26,13 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username" , nullable = false)
-    private String username;
+    @Column(name = "first_name" , nullable = false)
+    private String firstName;
 
-    @Column(name = "mobile_number", nullable = false)
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "mobile_number", nullable = false , unique = true)
     @Min(value = 1000000000L, message = "Mobile number must be at least 10 digits")
     @Max(value = 999999999999999L, message = "Mobile number cannot exceed 15 digits")
     private BigInteger mobileNumber; // Kept BigInteger, replaced @Size
@@ -61,7 +63,8 @@ public class AppUser {
         this.password = u.getPassword();
         this.email = u.getEmail();
         this.mobileNumber = u.getMobileNumber();
-        this.username = u.getUsername();
+        this.firstName = u.getFirstName();
+        this.lastName = u.getLastName();
         this.id = u.getId();
         Otp = u.getOtp();
         this.isRegister = u.getIsRegister();

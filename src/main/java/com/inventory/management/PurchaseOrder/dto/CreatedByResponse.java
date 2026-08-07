@@ -13,6 +13,6 @@ public record CreatedByResponse(
         if(user == null) {
             return null;
         }
-        return new CreatedByResponse(user.getId() , user.getUsername() , user.getMobileNumber());
+        return new CreatedByResponse(user.getId() , user.getFirstName() , user.getMobileNumber());
     }
 }

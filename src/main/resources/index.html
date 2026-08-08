@@ -554,7 +554,7 @@
        CONFIGURATION — point this at your running Spring Boot app
        ========================================================= */
     const API_BASE_URL = "http://127.0.0.1:8080/api";
-
+         <!-- const API_BASE_URL = "https://inventorymanagementbackend-mad5.onrender.com/api"; -->
     /* =========================================================
        STATE
        Auth token is kept in memory only (not localStorage) —
@@ -563,6 +563,7 @@
        file is running outside a sandboxed preview.
        ========================================================= */
     let authToken = null;
+    let userId = null;
     let currentUser = null;
     let categoriesCache = [];
     let warehousesCache = [];
@@ -626,6 +627,7 @@
             const data = await api('/auth/login', { method: 'POST', body: JSON.stringify({ mobileNumber, password }) });
             authToken = data.accessToken;
             currentUser = { mobileNumber };
+            userId = data.id
             document.getElementById('user-name').textContent = mobileNumber;
             document.getElementById('user-avatar').textContent = "Harsh".charAt(0).toUpperCase();
             document.getElementById('login-screen').style.display = 'none';
@@ -828,7 +830,7 @@
                 await api(`/products/${id}`, { method: 'PUT', body: JSON.stringify(payload) });
                 toast('Product updated');
             } else {
-                await api('/products/add-product', { method: 'POST', body: JSON.stringify(payload) });
+                await api('/products', { method: 'POST', body: JSON.stringify(payload) });
                 toast('Product created');
             }
             closeModal('modal-product');
@@ -878,7 +880,7 @@
         const parentId = document.getElementById('category-parent').value;
         const payload = { name: document.getElementById('category-name').value, parentId: parentId ? Number(parentId) : null };
         try {
-            await api('/category/add-category', { method: 'POST', body: JSON.stringify(payload) });
+            await api('/category', { method: 'POST', body: JSON.stringify(payload) });
             toast('Category created');
             closeModal('modal-category');
             await loadCategories();
@@ -933,7 +935,7 @@
             address: document.getElementById('warehouse-address').value,
         };
         try {
-            await api('/warehouses', { method: 'POST', body: JSON.stringify(payload) });
+            await api('/warehouse', { method: 'POST', body: JSON.stringify(payload) });
             toast('Warehouse created');
             closeModal('modal-warehouse');
             await loadWarehouses();
@@ -1014,9 +1016,11 @@
         clearBanner('adjustment-form-banner');
         const payload = {
             productId: Number(document.getElementById('adj-product').value),
-            warehouseId: Number(document.getElementById('adj-warehouse').value),
+            fromWarehouseId: 2 ,
+            toWarehouseId: Number(document.getElementById('adj-warehouse').value),
             deltaQty: Number(document.getElementById('adj-delta').value),
-            reason: document.getElementById('adj-reason').value,
+            note : document.getElementById('adj-reason').value,
+            createdBy : userId
         };
         try {
             await api('/stock/adjustments', { method: 'POST', body: JSON.stringify(payload) });

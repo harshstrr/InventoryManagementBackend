@@ -285,12 +285,12 @@
         <div class="login-error" id="login-error"></div>
         <form id="login-form">
             <div class="field">
-                <label>Email</label>
-                <input type="number" id="login-email" required autocomplete="username" placeholder="Enter mobile Number">
+                <label>MobileNumber</label>
+                <input type="number" id="login-email" value="8504991125" required autocomplete="username" placeholder="Enter mobile Number">
             </div>
             <div class="field">
                 <label>Password</label>
-                <input type="password" id="login-password" required autocomplete="current-password" placeholder="••••••••">
+                <input type="password" id="login-password" value="Harsh1125@" required autocomplete="current-password" placeholder="••••••••">
             </div>
             <button type="submit" class="btn btn-primary" id="login-btn">Sign in</button>
         </form>
@@ -553,7 +553,7 @@
     /* =========================================================
        CONFIGURATION — point this at your running Spring Boot app
        ========================================================= */
-    const API_BASE_URL = "http://localhost:8080/api";
+    const API_BASE_URL = "http://127.0.0.1:8080/api";
 
     /* =========================================================
        STATE
@@ -608,6 +608,7 @@
         el.textContent = ''; el.className = 'form-banner';
     }
 
+
     /* =========================================================
        LOGIN
        ========================================================= */
@@ -623,12 +624,13 @@
 
         try {
             const data = await api('/auth/login', { method: 'POST', body: JSON.stringify({ mobileNumber, password }) });
-            authToken = data.token;
+            authToken = data.accessToken;
             currentUser = { mobileNumber };
             document.getElementById('user-name').textContent = mobileNumber;
             document.getElementById('user-avatar').textContent = "Harsh".charAt(0).toUpperCase();
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('app-screen').style.display = 'block';
+            
             await bootstrapApp();
         } catch (err) {
             errBox.textContent = err.message || 'Invalid email or password';
@@ -752,7 +754,7 @@
        ========================================================= */
     async function loadProducts() {
         try {
-            productsCache = await api('/products/getAllProduct') || [];
+            productsCache = await api('/products') || [];
         } catch (err) {
             productsCache = [];
             toast('Could not load products — ' + err.message, true);
@@ -842,7 +844,7 @@
        ========================================================= */
     async function loadCategories() {
         try {
-            categoriesCache = await api('/category/getAllCategory') || [];
+            categoriesCache = await api('/category') || [];
         } catch (err) {
             categoriesCache = [];
             toast('Could not load categories — ' + err.message, true);
@@ -891,7 +893,7 @@
        ========================================================= */
     async function loadWarehouses() {
         try {
-            warehousesCache = await api('/warehouses') || [];
+            warehousesCache = await api('/warehouse') || [];
         } catch (err) {
             warehousesCache = [];
             toast('Could not load warehouses — ' + err.message, true);

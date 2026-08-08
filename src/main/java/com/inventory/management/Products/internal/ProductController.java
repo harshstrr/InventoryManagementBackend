@@ -27,11 +27,11 @@ public class ProductController {
     private productServices ProductServices;
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ProductSummaryResponse>>> getAllProducts (){
+    public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProducts (){
         try {
-            List<ProductSummaryResponse> response = ProductServices.findAllProducts()
+            List<ProductResponse> response = ProductServices.findAllProducts()
                     .stream()
-                    .map(ProductSummaryResponse::from)
+                    .map(ProductResponse::from)
                     .toList();
             return ResponseEntity.ok(ApiResponse.success( response , "Successfully fetch Products"));
         } catch (Exception e) {

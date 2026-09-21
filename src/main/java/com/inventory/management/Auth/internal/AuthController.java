@@ -1,5 +1,6 @@
 package com.inventory.management.Auth.internal;
 
+import com.inventory.management.Auth.AuthResult;
 import com.inventory.management.Auth.dto.AuthResponse;
 import com.inventory.management.Auth.dto.RefreshRequest;
 import com.inventory.management.Common.ApiResponse;
@@ -9,7 +10,9 @@ import com.inventory.management.Auth.dto.LoginResponse;
 import com.inventory.management.User.dto.AppUserRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
@@ -20,10 +23,16 @@ public class AuthController {
     @Autowired
     private AuthServices authServices;
 
+
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody @Valid LoginRequest payload) {
-        try{
-            return ResponseEntity.ok(ApiResponse.success( LoginResponse.from(authServices.loginWithPassword(payload)) , "Successfully Login "));
+        try {
+            AuthResult result = authServices.loginWithPassword(payload);
+            LoginResponse response = LoginResponse.from(result.user(), result.accessToken());
+
+            return ResponseEntity.ok(ApiResponse.success(response, "Successfully Logged In"));
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.error(e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }

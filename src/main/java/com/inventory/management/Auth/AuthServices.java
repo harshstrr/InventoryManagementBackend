@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -26,7 +27,7 @@ public class AuthServices {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public AppUser loginWithPassword(LoginRequest payload) {
+    public AuthResult loginWithPassword(LoginRequest payload) {
         AppUser user = appUserRepository.findByMobileNumber(payload.mobileNumber())
                 .orElseThrow (() -> new BadCredentialsException("Invalid mobile number or password"));
 
@@ -37,12 +38,11 @@ public class AuthServices {
         String token = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
-        user.setAccessToken(token);
         user.setRefreshToken(refreshToken);
         user.setIsActive(true);
 
         appUserRepository.saveAndFlush(user);
-        return user;
+        return new AuthResult(user, token);
     }
 
     public AuthResponse refreshToken(RefreshRequest req) {
@@ -92,15 +92,21 @@ public class AuthServices {
     public LoginResponse verifyOtp(BigInteger mobileNumber , Long otp) {
         AppUser user = appUserRepository.findByMobileNumber(mobileNumber)
                 .orElseThrow (() -> new BadCredentialsException("Invalid mobile number or password"));
-
+        String token;
         if(user.getOtp().equals(otp)){
             user.setIsActive(true);
             user.setIsRegister(true);
+
+            token = jwtService.generateToken(user);
+            String refreshToken = jwtService.generateRefreshToken(user);
+
+            user.setRefreshToken(refreshToken);
         } else {
             throw new RuntimeException("Invalid OTP");
         }
         appUserRepository.saveAndFlush(user);
-        return LoginResponse.from(user);
+
+        return LoginResponse.from(user, token);
     }
 
     public LoginResponse createNewUser(AppUserRequest u ) {
@@ -115,7 +121,7 @@ public class AuthServices {
 
         sendOtp(u.mobileNumber());
 
-        return LoginResponse.from(user);
+        return LoginResponse.from(user, user.getRefreshToken());
     }
 
     public void disableUser (LoginRequest payload) {

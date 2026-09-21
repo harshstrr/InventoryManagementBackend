@@ -8,10 +8,10 @@ public record LoginResponse(
         String accessToken,
         String refreshToken
 ) {
-    public static LoginResponse from(AppUser user) {
+    public static LoginResponse from(AppUser user , String accessToken) {
         if(user == null){
             return null;
         }
-        return new LoginResponse(user.getId() , user.getFirstName() , user.getAccessToken() , user.getRefreshToken());
+        return new LoginResponse(user.getId() , user.getFirstName() , accessToken , user.getRefreshToken());
     }
 }
